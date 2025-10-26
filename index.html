@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Relatórios de Macroscopia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navegação Principal -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-microscope"></i>
+                <span>Macroscan</span>
+            </div>
+            <div class="navbar-menu">
+                <button class="nav-btn" id="navLogin" onclick="mostrarSecao('login')" title="Fazer Login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <button class="nav-btn" id="navRegistro" onclick="mostrarSecao('registro')" title="Criar Conta">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Registro</span>
+                </button>
+                <button class="nav-btn" id="navRelatorio" onclick="mostrarSecao('relatorio')" title="Criar Novo Relatório" style="display: none;">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Novo Relatório</span>
+                </button>
+                <button class="nav-btn" id="navLista" onclick="mostrarSecao('listaRelatorios')" title="Listar Meus Relatórios" style="display: none;">
+                    <i class="fas fa-list"></i>
+                    <span>Meus Relatórios</span>
+                </button>
+                <button class="nav-btn nav-logout" id="navLogout" onclick="logout()" title="Sair da Conta" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Seção de Login -->
+        <div id="secaoLogin" class="secao secao-ativa">
+            <div class="card card-auth">
+                <div class="card-header">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <h2>Bem-vindo ao Sistema</h2>
+                    <p class="subtitle">Faça login para acessar seus relatórios</p>
+                </div>
+                <form onsubmit="fazerLogin(event)" class="form-auth">
+                    <div class="form-group">
+                        <label for="loginUsername">
+                            <i class="fas fa-user"></i>
+                            Usuário
+                        </label>
+                        <input 
+                            type="text" 
+                            id="loginUsername" 
+                            name="username" 
+                            placeholder="Digite seu usuário"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">
+                            <i class="fas fa-lock"></i>
+                            Senha
+                        </label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            name="password" 
+                            placeholder="Digite sua senha"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-arrow-right"></i>
+                        Entrar
+                    </button>
+                </form>
+
+                <div class="form-divider">
+                    <span>Não tem conta?</span>
+                </div>
+
+                <button onclick="mostrarSecao('registro')" class="btn btn-secondary btn-block">
+                    <i class="fas fa-user-plus"></i>
+                    Criar Nova Conta
+                </button>
+
+                <div id="loginMensagem" class="mensagem"></div>
+            </div>
+        </div>
+
+        <!-- Seção de Registro -->
+        <div id="secaoRegistro" class="secao">
+            <div class="card card-auth">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i>
+                    <h2>Criar Conta</h2>
+                    <p class="subtitle">Registre-se para começar a usar o sistema</p>
+                </div>
+                <form onsubmit="fazerRegistro(event)" class="form-auth">
+                    <div class="form-group">
+                        <label for="registroUsername">
+                            <i class="fas fa-user"></i>
+                            Usuário
+                        </label>
+                        <input 
+                            type="text" 
+                            id="registroUsername" 
+                            name="username" 
+                            placeholder="Escolha um usuário"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registroPassword">
+                            <i class="fas fa-lock"></i>
+                            Senha
+                        </label>
+                        <input 
+                            type="password" 
+                            id="registroPassword" 
+                            name="password" 
+                            placeholder="Crie uma senha segura"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-check"></i>
+                        Registrar
+                    </button>
+                </form>
+
+                <div class="form-divider">
+                    <span>Já tem conta?</span>
+                </div>
+
+                <button onclick="mostrarSecao('login')" class="btn btn-secondary btn-block">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Fazer Login
+                </button>
+
+                <div id="registroMensagem" class="mensagem"></div>
+            </div>
+        </div>
+
+        <!-- Seção de Criar Relatório -->
+        <div id="secaoRelatorio" class="secao">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle"></i>
+                    <h2>Criar Novo Relatório</h2>
+                    <p class="subtitle">Preencha os dados do espécime para gerar o relatório</p>
+                </div>
+                <form onsubmit="criarRelatorio(event)" class="form-relatorio">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="titulo">
+                                <i class="fas fa-heading"></i>
+                                Título
+                            </label>
+                            <input 
+                                type="text" 
+                                id="titulo" 
+                                name="titulo" 
+                                placeholder="Ex: Lesão na Pele"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">
+                            <i class="fas fa-align-left"></i>
+                            Descrição
+                        </label>
+                        <textarea 
+                            id="descricao" 
+                            name="descricao" 
+                            placeholder="Descreva os achados macroscópicos do espécime"
+                            rows="4"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="autor">
+                                <i class="fas fa-user-md"></i>
+                                Autor (Médico)
+                            </label>
+                            <input 
+                                type="text" 
+                                id="autor" 
+                                name="autor" 
+                                placeholder="Nome do patologista"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="crm">
+                                <i class="fas fa-id-card"></i>
+                                CRM
+                            </label>
+                            <input 
+                                type="text" 
+                                id="crm" 
+                                name="crm" 
+                                placeholder="Número do CRM"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-section-title">
+                        <i class="fas fa-ruler"></i>
+                        Dimensões do Espécime (em cm)
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="largura">
+                                Largura
+                            </label>
+                            <input 
+                                type="number" 
+                                id="largura" 
+                                name="largura" 
+                                step="0.1" 
+                                placeholder="0.0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="comprimento">
+                                Comprimento
+                            </label>
+                            <input 
+                                type="number" 
+                                id="comprimento" 
+                                name="comprimento" 
+                                step="0.1" 
+                                placeholder="0.0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="espessura">
+                                Espessura
+                            </label>
+                            <input 
+                                type="number" 
+                                id="espessura" 
+                                name="espessura" 
+                                step="0.1" 
+                                placeholder="0.0"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-save"></i>
+                        Criar Relatório
+                    </button>
+                </form>
+
+                <div id="relatorioMensagem" class="mensagem"></div>
+            </div>
+        </div>
+
+        <!-- Seção de Listagem de Relatórios -->
+        <div id="secaoListaRelatorios" class="secao">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-list"></i>
+                    <h2>Meus Relatórios</h2>
+                    <p class="subtitle">Visualize e gerencie seus relatórios de macroscopia</p>
+                </div>
+
+                <button onclick="listarRelatorios()" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i>
+                    Carregar Relatórios
+                </button>
+
+                <div id="listaRelatorios" class="relatorios-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Sistema de Relatórios de Macroscopia. Todos os direitos reservados.</p>
+        <p>Desenvolvido com <i class="fas fa-heart"></i> para a medicina patológica.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
